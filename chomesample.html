@@ -15,7 +15,7 @@
   }
   *{box-sizing:border-box}
   body{
-    margin:0; min-height:100svh; display:grid; 
+    margin:50px; min-height:200svh; display:grid; 
     background: radial-gradient(1200px 800px at 50% 40%, #0f1626 0%, var(--bg) 55%, #080b12 100%);
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
   }
@@ -23,7 +23,7 @@
     display:grid; gap:22px; place-items:center; padding: 20px;
   }
   .logo-container{
-    width:min(78vmin, 560px); aspect-ratio:1/1; display:block;
+    width:min(178vmin, 100%); aspect-ratio:1/1; display:block;
     filter: drop-shadow(0 10px 30px rgba(62,166,255,.25));
     margin-top: 20px; /* Space from the very top */
   }
@@ -52,7 +52,7 @@
 <h1 class="brand" style="text-align:center;">RELATIVITY</h1>
 <div class="wrap" style="text-align:top; margin-top: 20px;">
   <!-- Responsive SVG logo -->
-  <svg class="logo pulse" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc" width="50%" height="50%">
+  <svg class="logo pulse" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc" width="70%" height="70%">
     <title id="title">Relativity Logo with Inward-Bending Grid</title>
     <desc id="desc">A circular emblem with curved latitude and longitude lines bending inward toward a bright core.</desc>
     <!-- defs: gradients & glow -->
@@ -69,7 +69,7 @@
         <stop offset="70%" stop-color="var(--grid)"/>
         <stop offset="100%" stop-color="white" />
       </linearGradient>
-      <filter id="soften" x="-5%" y="-5%" width="110%" height="110%">
+      <filter id="soften" x="-5%" y="-5%" width="150%" height="150%">
         <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="b"/>
         <feBlend in="SourceGraphic" in2="b" mode="screen"/>
       </filter>
