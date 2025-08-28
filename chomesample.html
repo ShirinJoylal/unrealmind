@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNREALMIND</title>
+<style>
+  :root{
+    --bg:#0b0f18;
+    --ring:#9ecbff;
+    --grid:#7fb0ff;
+    --core:#2b6cff;
+    --glow:#3ea6ff;
+    --text:#eaf2ff;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100svh; display:grid; 
+    background: radial-gradient(1200px 800px at 50% 40%, #0f1626 0%, var(--bg) 55%, #080b12 100%);
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  }
+  .wrap{
+    display:grid; gap:22px; place-items:center; padding: 20px;
+  }
+  .logo-container{
+    width:min(78vmin, 560px); aspect-ratio:1/1; display:block;
+    filter: drop-shadow(0 10px 30px rgba(62,166,255,.25));
+    margin-top: 20px; /* Space from the very top */
+  }
+  
+  
+  .brand{
+    letter-spacing:.18em; text-transform:uppercase; color:var(--text);
+    font-weight:600; opacity:.9;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .pulse{ animation:pulse 4s ease-in-out infinite }
+    @keyframes pulse{
+      0%,100%{ opacity:.9; filter:drop-shadow(0 6px 16px rgba(62,166,255,.22)) }
+      50%{ opacity:1; filter:drop-shadow(0 12px 36px rgba(62,166,255,.35)) }
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="topnav home">
+    <ul>
+        <li><a href="chomesample.html">Home</a></li>
+        <li><a href="fconnection2.html">Contact</a></li>
+    </ul>
+    </div>
+<h1 class="brand" style="text-align:center;">RELATIVITY</h1>
+<div class="wrap" style="text-align:top; margin-top: 20px;">
+  <!-- Responsive SVG logo -->
+  <svg class="logo pulse" viewBox="0 0 1000 1000" role="img" aria-labelledby="title desc" width="50%" height="50%">
+    <title id="title">Relativity Logo with Inward-Bending Grid</title>
+    <desc id="desc">A circular emblem with curved latitude and longitude lines bending inward toward a bright core.</desc>
+    <!-- defs: gradients & glow -->
+    <defs>
+      <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="white" stop-opacity=".9"/>
+        <stop offset="35%" stop-color="var(--glow)" stop-opacity=".55"/>
+        <stop offset="65%" stop-color="var(--glow)" stop-opacity=".12"/>
+        <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="ringStroke" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"  stop-color="white" />
+        <stop offset="30%" stop-color="var(--ring)" />
+        <stop offset="70%" stop-color="var(--grid)"/>
+        <stop offset="100%" stop-color="white" />
+      </linearGradient>
+      <filter id="soften" x="-5%" y="-5%" width="110%" height="110%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="b"/>
+        <feBlend in="SourceGraphic" in2="b" mode="screen"/>
+      </filter>
+      <style>
+        .ring { stroke:url(#ringStroke); stroke-width:16; fill:none }
+        .grid { stroke:var(--grid); stroke-width:3; fill:none; opacity:.85; filter:url(#soften) }
+        .grid.thick { stroke-width:5 }
+        .core { fill:radial-gradient(#fff, var(--core)) }
+      </style>
+    </defs>
+    <!-- Outer ring -->
+    <circle class="ring" cx="500" cy="500" r="430"/>
+    <!-- Core glow + singularity -->
+    <circle cx="500" cy="500" r="260" fill="url(#coreGlow)" opacity=".55"/>
+    <circle cx="500" cy="500" r="26" fill="white" opacity=".9"/>
+    <circle cx="500" cy="500" r="18" fill="var(--core)"/>
+    <!-- Curved latitude lines (bend inward) -->
+    <path class="grid" d="M 100,260 C 420,330 580,330 900,260" />
+    <path class="grid" d="M 70,360  C 420,430 580,430 930,360" />
+    <path class="grid thick" d="M 50,500 C 420,500 580,500 950,500" />
+    <path class="grid" d="M 70,640  C 420,570 580,570 930,640" />
+    <path class="grid" d="M 100,740 C 420,670 580,670 900,740" />
+    <!-- Curved longitude lines (bend inward) -->
+    <path class="grid" d="M 260,100 C 330,420 330,580 260,900" />
+    <path class="grid" d="M 360,70  C 430,420 430,580 360,930" />
+    <path class="grid thick" d="M 500,50 C 500,420 500,580 500,950" />
+    <path class="grid" d="M 640,70  C 570,420 570,580 640,930" />
+    <path class="grid" d="M 740,100 C 670,420 670,580 740,900" />
+    <!-- Subtle inner ring to accent the warp -->
+    <circle cx="500" cy="500" r="360" fill="none" stroke="var(--grid)" stroke-opacity=".35" stroke-width="2"/>
+    <!-- Clip the grid to the main circle for a tidy edge -->
+    <clipPath id="clip">
+      <circle cx="500" cy="500" r="430"/>
+    </clipPath>
+    <g clip-path="url(#clip)"></g>
+  </svg>
+</div>
+<p1 class="brand"> Special relativity describes
+      how space and time are interwoven into a single continuum known as spacetime.
+      And it shows how measurement of them are relative to the observers motion.
+      General relativity is the geometric theory of gravitation, which describes how
+      matter and energy in the universe influence the curvature of spacetime,how earth
+      and other celestial bodies move in response to this curvature, and how the solar system and all
+      mass in the universe interact with each other through this curvature. and it is well
+      known and accepted and solves many  unexplained questions.</p1>
+      <p2 class="brand">Einstien defines speed of light in his special theory of relativity (1905)
+      as a universal constant, which is the maximum speed at which all energy, matter, and information in the universe can travel.
+      This means that nothing can travel faster than the speed of light in a vacuum, which is approximately 299,792,458 meters per second (or about 186,282 miles per second).
+      
+      </p2>
+    
+  
+  </div>
+</body>
+</html>

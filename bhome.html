@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>UNREALMIND</title>
+<style>
+  :root{
+    /* Tweak these to restyle the logo */
+    --bg1: #071427;        /* background dark */
+    --bg2: #0a2a50;        /* background mid */
+    --glow: #7fd1ff;       /* neon glow */
+    --stroke: #bfe9ff;     /* main stroke */
+    --dot: #ffffff;        /* node dots */
+    --text: #ffffff;       /* text color */
+    --size: 720px;         /* overall size of the logo block */
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    background: radial-gradient(1200px 800px at 65% 35%, var(--bg2), var(--bg1) 60%);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    color:var(--text);
+  }
+
+  .logo-wrap{
+    width:min(92vw, var(--size));
+    aspect-ratio: 16/9;
+    display:grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: clamp(16px, 3vw, 36px);
+    align-items:center;
+    padding: clamp(16px, 3vw, 40px);
+    border-radius: 24px;
+    background: linear-gradient(170deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    box-shadow:
+      0 8px 28px rgba(0,0,0,0.35),
+      inset 0 0 0 1px rgba(255,255,255,0.06);
+    backdrop-filter: blur(6px);
+  }
+
+  svg{width:"50%"; height:"auto"; display:block}
+
+  .wordmark{
+    letter-spacing: 0.02em;
+  }
+  .wordmark h1{
+    margin:0 0 .25em 0;
+    font-weight: 800;
+    font-size: clamp(28px, 6vw, 56px);
+    line-height: 1;
+  }
+  .wordmark h2{
+    margin:0;
+    font-weight: 700;
+    font-size: clamp(14px, 2.75vw, 26px);
+    letter-spacing: .2em;
+    opacity:.95;
+  }
+
+  /* Subtle shimmer on the stroke */
+  @keyframes glow-shift {
+    0%   { stroke-dashoffset: 0;   }
+    100% { stroke-dashoffset: -240;}
+  }
+  .trace{
+    stroke-dasharray: 6 10;
+    animation: glow-shift 12s linear infinite;
+    opacity:.75;
+  }
+</style>
+</head>
+<body>
+  <div class="topnav home">
+    <ul>
+      <li><a class="active" href="bhome.html">Home</a></li>
+      <li><a href="econnection.html">Contact</a></li>
+    </ul>
+    </div>
+
+<div class="logo-wrap">
+  <!-- Orbital / infinity emblem -->
+  <svg viewBox="0 0 420 420" length="50%" width="50%" aria-labelledby="title desc" role="img">
+    <title id="title">UNREALMIND</title>
+    <desc id="desc">Figure-eight orbital with glowing nodes</desc>
+
+    <defs>
+      <!-- Soft outer glow -->
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="6" result="b1"/>
+        <feGaussianBlur stdDeviation="14" result="b2"/>
+        <feMerge>
+          <feMergeNode in="b2"/>
+          <feMergeNode in="b1"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+
+      <!-- Stroke gradient -->
+      <linearGradient id="strokeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%"   stop-color="var(--stroke)" />
+        <stop offset="100%" stop-color="var(--glow)"   />
+      </linearGradient>
+    </defs>
+
+    <!-- Outer guide (thin) -->
+    <path d="M210,210
+             C130,120  90, 70  70, 70
+             C 30, 70  30,140  70,170
+             C115,205 150,220 210,210
+             C270,200 305,215 350,250
+             C390,280 390,350 350,350
+             C330,350 290,300 210,210
+             C130,120  90, 70  70, 70
+             "
+          fill="none" stroke="rgba(255,255,255,.08)" stroke-width="18" stroke-linecap="round" />
+
+    <!-- Main neon stroke -->
+    <path d="M210,210
+             C120,120  85, 80  70, 80
+             C 35, 80  35,140  80,175
+             C125,210 160,220 210,210
+             C260,200 295,210 340,245
+             C385,280 385,340 340,340
+             C325,340 300,300 210,210
+             C120,120  85, 80  70, 80"
+          class="core"
+          fill="none" stroke="url(#strokeGrad)" stroke-width="12" stroke-linecap="round" filter="url(#glow)"/>
+
+    <!-- Dashed accent on top -->
+    <path d="M210,210
+             C120,120  85, 80  70, 80
+             C 35, 80  35,140  80,175
+             C125,210 160,220 210,210
+             C260,200 295,210 340,245
+             C385,280 385,340 340,340
+             C325,340 300,300 210,210
+             C120,120  85, 80  70, 80"
+          class="trace"
+          fill="none" stroke="var(--glow)" stroke-width="2" stroke-linecap="round" filter="url(#glow)"/>
+
+    <!-- Node dots -->
+    <g fill="var(--dot)" filter="url(#glow)">
+      <circle cx="70"  cy="80"  r="6"/>
+      <circle cx="80"  cy="175" r="6"/>
+      <circle cx="210" cy="210" r="6"/>
+      <circle cx="340" cy="245" r="6"/>
+      <circle cx="340" cy="340" r="6"/>
+      <circle cx="210" cy="30"  r="5" opacity=".7"/>
+      <circle cx="210" cy="390" r="5" opacity=".7"/>
+    </g>
+
+    <!-- Outer ring hints -->
+    <circle cx="210" cy="210" r="190" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="8"/>
+  </svg>
+
+  <!-- Wordmark -->
+  <div class="wordmark" aria-label="Quantum Computing wordmark">
+    <h1>QUANTUM</h1>
+    <h2>MECHANICS</h2>
+  </div>
+</div>
+<h2 style="font-family:arial,sans-serif; font-size: 20px; color: #e9eeed; text-align: center; max-width: 600px; margin-top: 20px; margin-bottom: 20px;">
+  QUANTUM theory
+</h2>
+<p style="font-family:arial,sans-serif; font-size: 20px; color: #e9eeed; text-align: center; max-width: 600px; margin-top: 20px; margin-bottom: 20px;">
+  Explore the fascinating world of quantum mechanics, where particles exist in multiple states and the universe
+  is governed by probabilities rather than certainties. Quantum mechanics is the study of the smallest 
+  fundamental particles and their interactions, revealing a reality that is both strange and beautiful.
+  From the behavior of electrons to the entanglement of particles across vast distances,
+  quantum mechanics challenges our understanding of reality and opens up new possibilities for technology and science.
+  Even the electronic devices we use every day rely on principles of quantum mechanics to function.
+</p>
+<p style="font-family:arial,sans-serif; font-size: 20px; color: #e9eeed; text-align: center; max-width: 600px; margin-top: 20px; margin-bottom: 20px;">
+  Quantum theories are well known, accepted and proven experimentally, and they define all about our universe and how it works at the smallest scales.
+</p>
+
+</body>
+</html>
+
+
+
+          
