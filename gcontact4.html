@@ -1,191 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Open Wall</title>
-    <style>
-      :root {
-        --bg: #0f172a; /* slate-900 */
-        --card: #111827ee; /* gray-900 */
-        --text: #e5e7eb; /* gray-200 */
-        --muted: #94a3b8; /* slate-400 */
-        --accent: #22d3ee; /* cyan-400 */
-        --accent-2: #a78bfa; /* violet-400 */
-      }
-      * { box-sizing: border-box; }
-      body {
-        margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-        background: radial-gradient(1000px 600px at 10% -10%, #0ea5e980, transparent),
-                    radial-gradient(800px 600px at 110% -20%, #8b5cf680, transparent),
-                    var(--bg);
-        color: var(--text);
-      }
-      .wrap { max-width: 880px; margin: 0 auto; padding: 32px 16px 56px; }
-      header.hero { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-      header.hero .dot { width: 10px; height: 10px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 0 20px var(--accent); }
-      header.hero h1 { font-size: clamp(28px, 3.6vw, 42px); margin: 0; letter-spacing: .5px; }
-      header.hero p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+<head>
+  <meta charset="UTF-8">
+  <title>Upload Image & Text</title>
+  <style>
+    /* Background Gradient */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #0d1b2a, #1b263b, #415a77);
+      color: #e0e1dd;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-      form#postForm { background: var(--card); border: 1px solid #1f2937; border-radius: 16px; padding: 16px; box-shadow: 0 10px 30px #0008; position: sticky; top: 8px; z-index: 3; }
-      .row { display: grid; grid-template-columns: 1fr 120px; gap: 12px; }
-      input, textarea, button { width: 100%; color: var(--text); background: #0b1220; border: 1px solid #1f2937; border-radius: 12px; padding: 10px 12px; font: inherit; outline: none; }
-      input::placeholder, textarea::placeholder { color: #64748b; }
-      textarea { min-height: 90px; resize: vertical; }
-      button { cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); border: none; font-weight: 700; }
-      button:disabled { filter: grayscale(1); opacity: .6; cursor: not-allowed; }
+    /* Center Card */
+    .container {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.7);
+      text-align: center;
+      width: 350px;
+    }
 
-      .feed { display: grid; gap: 14px; margin-top: 18px; }
-      article.post { background: var(--card); border: 1px solid #1f2937; border-radius: 16px; padding: 14px; }
-      article.post header { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
-      article.post header .name { font-weight: 700; color: #c7d2fe; }
-      article.post p { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
-      .empty { text-align: center; color: var(--muted); padding: 24px 8px; }
-      footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 28px; }
-      code.inline { background: #0b1220; border: 1px solid #1f2937; padding: 2px 6px; border-radius: 8px; }
+    h2 {
+      margin-bottom: 20px;
+      color: #f0f3fa;
+    }
 
-      @media (max-width: 560px) {
-        .row { grid-template-columns: 1fr; }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="Contact">
+    input[type="text"], input[type="file"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+    }
+
+    input[type="text"] {
+      background: #1b263b;
+      color: #f0f3fa;
+    }
+
+    input[type="file"] {
+      background: #1b263b;
+      color: #a9bcd0;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #0077b6;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00a8e8;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="contact">
     <ul>
-        <li><a href="dhome4.html">Home</a></li>
-        <li><a href="gcontact4.html">Contact</a></li>
+      <li><a href="dhome4.html">Home</a></li>
+      <li><a href="gcontact4.html">Contact</a></li>
     </ul>
-    </div>
-      
-    <div class="wrap">
-      <header class="hero">
-        <span class="dot" aria-hidden="true"></span>
-        <div>
-          <h1>Open Wall</h1>
-          <p>Type your thought and studies here lets share our knowledge to the world.</p>
-        </div>
-      </header>
+  <div class="container">
+    <h2>📤 Upload Image & Text</h2>
+    
+    <form id="uploadForm">
+      <input type="text" id="message" placeholder="Enter your text" required><br>
+      <input type="file" id="imageFile" accept="image/*" required><br>
+      <button type="submit">Upload</button>
+    </form>
 
-      <form id="postForm">
-        <div class="row">
-          <input id="author" name="author" maxlength="40" placeholder="Your name (optional)" />
-          <button id="submitBtn" type="submit">Post</button>
-        </div>
-        <textarea id="content" name="content" maxlength="10000" placeholder="Write anything (max 10000 characters)…" required></textarea>
-      </form>
+    <p id="status"></p>
+  </div>
 
-      <section class="feed" id="feed" aria-live="polite"></section>
+  <script type="module">
+    // Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
 
-      <footer>
-         powered by <code class="inline">Firebase</code>.
-      </footer>
-    </div>
+    // 🔹 Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-    <!-- Firebase client SDK (ES modules via CDN). Replace config below with YOUR project credentials. -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-      // 1) CREATE a Firebase project at https://console.firebase.google.com
-      // 2) ENABLE Firestore (in test mode for local demos only)
-      // 3) COPY your web app config into firebaseConfig below
-      const firebaseConfig = {
-        apiKey: "PASTE_YOURS",
-        authDomain: "PASTE_YOURS",
-        projectId: "PASTE_YOURS",
-        appId: "PASTE_YOURS"
-      };
+    // Handle Form Submission
+    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-      // Init Firebase
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      const postsRef = collection(db, "posts");
+      const message = document.getElementById("message").value;
+      const file = document.getElementById("imageFile").files[0];
+      const status = document.getElementById("status");
 
-      const form = document.getElementById("postForm");
-      const contentEl = document.getElementById("content");
-      const authorEl = document.getElementById("author");
-      const submitBtn = document.getElementById("submitBtn");
-      const feed = document.getElementById("feed");
-
-      function escapeUnsafe(str = "") {
-        // Make sure we never inject raw HTML (basic XSS guard)
-        return str
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;");
+      if (!file) {
+        status.textContent = "⚠️ Please select an image.";
+        return;
       }
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const text = contentEl.value.trim();
-        if (!text) return;
-        submitBtn.disabled = true;
-        try {
-          await addDoc(postsRef, {
-            content: text.slice(0, 1000),
-            author: authorEl.value.trim().slice(0, 40) || "Anonymous",
-            createdAt: serverTimestamp()
-          });
-          contentEl.value = "";
-        } catch (err) {
-          alert("Failed to post. Check console for details.");
-          console.error(err);
-        } finally {
-          submitBtn.disabled = false;
-        }
-      });
+      try {
+        // Upload image to Firebase Storage
+        const storageRef = ref(storage, "uploads/" + file.name);
+        await uploadBytes(storageRef, file);
 
-      const q = query(postsRef, orderBy("createdAt", "desc"), limit(100));
-      onSnapshot(q, (snap) => {
-        if (snap.empty) {
-          feed.innerHTML = `<div class="empty">No posts yet. Be the first! ✨</div>`;
-          return;
-        }
-        feed.innerHTML = "";
-        snap.forEach((doc) => {
-          const d = doc.data();
-          const card = document.createElement("article");
-          card.className = "post";
+        // Get file URL
+        const imageUrl = await getDownloadURL(storageRef);
 
-          const h = document.createElement("header");
-          const who = document.createElement("span");
-          who.className = "name";
-          who.textContent = (d.author || "Anonymous");
-          const when = document.createElement("span");
-          try {
-            const date = d.createdAt?.toDate?.() || new Date();
-            when.textContent = ` • ${date.toLocaleString()}`;
-          } catch (_) { when.textContent = ""; }
-          h.appendChild(who); h.appendChild(when);
-
-          const p = document.createElement("p");
-          p.textContent = d.content || ""; // use textContent so user text is not treated as HTML
-
-          card.appendChild(h);
-          card.appendChild(p);
-          feed.appendChild(card);
+        // Save text + image URL in Firestore
+        await addDoc(collection(db, "posts"), {
+          text: message,
+          imageUrl: imageUrl,
+          timestamp: new Date()
         });
-      });
-    </script>
 
-    <!--
-      🔒 Minimal Firestore security rules (for a quick demo ONLY):
-      - In the Firebase console > Firestore > Rules, you can start with test mode while developing.
-      - BEFORE going live, add auth, rate limiting, and moderation.
-
-      // Example (development-only) rules:
-      rules_version = '2';
-      service cloud.firestore {
-        match /databases/{database}/documents {
-          match /posts/{postId} {
-            allow read: if true; // public read
-            allow create: if request.resource.data.content is string
-                           && request.resource.data.content.size() <= 1000
-                           && request.resource.data.author is string
-                           && request.time < timestamp.date(2099, 1, 1);
-          }
-        }
+        status.textContent = "✅ Uploaded successfully!";
+        status.style.color = "lightgreen";
+      } catch (error) {
+        console.error("Error uploading:", error);
+        status.textContent = "❌ Upload failed.";
+        status.style.color = "red";
       }
-    -->
-  </body>
+    });
+  </script>
+</body>
 </html>
+
