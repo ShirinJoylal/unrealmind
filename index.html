@@ -1,71 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>UNREALMIND</title>
   <style>
-    body {
-      background-color:#0d1117;
-       color: #f1f5f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    * {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      flex-direction: column;
-      
-    }
-  .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    margin-top: 20px;
-  }
-
-    svg {
-      width: 150px;
-      height: 150px;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .glow {
-      filter: drop-shadow(0 0 5px #00ffe7) drop-shadow(0 0 10px #00ffe7);
+    body {
+      background: radial-gradient(circle at center, #0a0f1f, #000);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Floating background particles */
+    .particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .particles span {
+      position: absolute;
+      display: block;
+      width: 15px;
+      height: 15px;
+      background: rgba(0, 255, 200, 0.5);
+      border-radius: 50%;
+      animation: float 10s linear infinite;
+    }
+
+    .particles span:nth-child(1) { top: 20%; left: 10%; animation-duration: 12s; }
+    .particles span:nth-child(2) { top: 60%; left: 80%; animation-duration: 18s; }
+    .particles span:nth-child(3) { top: 40%; left: 50%; animation-duration: 15s; }
+    .particles span:nth-child(4) { top: 80%; left: 20%; animation-duration: 20s; }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-60px) scale(1.3); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    }
+
+    /* Orbiting ring */
+    .orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50vw;
+      height: 50vw;
+      max-width: 300px;
+      max-height: 300px;
+      margin-left: -25vw;
+      margin-top: -25vw;
+      border: 2px dashed rgba(0, 255, 200, 0.2);
+      border-radius: 50%;
+      animation: spin 12s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Logo block */
+    .logo-container {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 60px 20px 40px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .logo {
+      font-size: clamp(2rem, 8vw, 4rem);
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: #00ffc8;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 10px #00ffc8,
+        0 0 20px #00b5ff,
+        0 0 40px #0051ff,
+        0 0 80px #7f00ff;
+      animation: glowPulse 2.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        text-shadow:
+          0 0 10px #00ffc8,
+          0 0 20px #00b5ff,
+          0 0 40px #0051ff;
+      }
+      100% {
+        text-shadow:
+          0 0 20px #00ffc8,
+          0 0 40px #00b5ff,
+          0 0 80px #7f00ff,
+          0 0 120px #ff008c;
+      }
+    }
+
+    .slogan {
+      margin-top: 15px;
+      font-size: clamp(0.9rem, 3vw, 1.2rem);
+      letter-spacing: 2px;
+      color: #eee;
+    }
+
+    /* Enter button */
+    .btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 14px 32px;
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      font-weight: bold;
+      color: #fff;
+      background: transparent;
+      border: 2px solid #00ffc8;
+      border-radius: 30px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 10px #00ffc8, inset 0 0 10px #00ffc8;
+      touch-action: manipulation; /* iOS tap fix */
+    }
+
+    .btn:hover {
+      background: #00ffc8;
+      color: #000;
+      box-shadow: 0 0 20px #00ffc8, 0 0 40px #00b5ff, 0 0 60px #7f00ff;
+      transform: scale(1.05);
+    }
+
+    /* Extra content */
+    .extra-section {
+      max-width: 800px;
+      margin: 30px auto 60px;
+      padding: 0 20px;
+      z-index: 2;
+      position: relative;
+    }
+
+    .extra-section h1 {
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: bold;
+      color: #1abc9c;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      margin-bottom: 15px;
+    }
+
+    .extra-section p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #ebedf0;
+      text-align: justify;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      .extra-section p {
+        text-align: left;
+        font-size: 1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .btn {
+        padding: 12px 24px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="particles">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="orbit"></div>
 
-  <svg viewBox="0 0 100 100" class="glow">
-    <!-- Outer circle -->
-    <circle cx="50" cy="50" r="40" stroke="#00ffe7" stroke-width="3" fill="none"/>
-    
-    <!-- Inner stylized Q -->
-    <path d="M50 20 A30 30 0 1 1 49.9 20" stroke="#00ffe7" stroke-width="3" fill="none"/>
-    <line x1="50" y1="50" x2="65" y2="65" stroke="#00ffe7" stroke-width="3"/>
-    
-    <!-- Circuit lines -->
-    <line x1="15" y1="50" x2="0" y2="50" stroke="#00ffe7" stroke-width="2"/>
-    <circle cx="0" cy="50" r="2.5" fill="#00ffe7"/>
+  <!-- Logo -->
+  <div class="logo-container">
+    <div class="logo">UnrealMind</div>
+    <div class="slogan">Where knowledge Meets Infinity</div>
+    <button class="btn" onclick="enterSite()">Enter Site</button>
+  </div>
 
-    <line x1="85" y1="50" x2="100" y2="50" stroke="#00ffe7" stroke-width="2"/>
-    <circle cx="100" cy="50" r="2.5" fill="#00ffe7"/>
+  <!-- Paragraph section -->
+  <div class="extra-section">
+    <h1>Welcome To UNREALMIND</h1>
+    <p>
+      At UnrealMind, we believe knowledge is limitless. Our mission is to create 
+      a space where curiosity thrives, ideas grow, and learning never ends. 
+      Dive in and explore infinity with us.This is a platform where you can discover interesting
+      facts and studies about various topics like quantum mechanics, artificial intelligence, space exploration,
+      science, and more.Explore the wonders of technology and science with us and expand you knowledge 
+      in an engaging way.Join us on this journey of discovery and innovation! stay tuned for more updates
+      as we delve deeper into the realms of knowledge. whether you're a student, a professional, or just 
+      a curious mind, UNREALMIND has something for everyone.In this platform you can share
+      your thoughts and knowledge to the world there is a comment section which is a public platform
+      where you can share your views and thoughts with the world and can also interact with others
+    </p>
+  </div>
 
-    <line x1="50" y1="15" x2="50" y2="0" stroke="#00ffe7" stroke-width="2"/>
-    <circle cx="50" cy="0" r="2.5" fill="#00ffe7"/>
-  </svg>
-<div style="text-align: center; color: #00ffe7; font-family: 'montserrat', sans-serif; font-weight: 800;"> UNREALMIND </div>
-<div part="description">Welcome To Unrealmind</div>
-<p style="font-size: 20px; text-align: center; max-width: 600px; margin-top: 20px; color: #e9eeed;">
-  
-  This is a platform where you can discover interesting facts and studies about different topics
-  like Quantum Computing, AI, science, and more. Explore the wonders of technology and science with us
-  and expand your knowledge in an engaging way. Join us on this journey of discovery and innovation!
-  Stay tuned for more updates and exciting content as we delve into the fascinating world of reality . Whether you're a tech enthusiast, a science lover, or just curious about the universe,
-  there's something here for everyone.In this website you can share your thoughts and studies on contact page of every pages.
-</p>
-<nav>
-  <a href="bhome.html" >second page</a>
 
-</nav>
+  <script>
+    function enterSite() {
+      window.location.href = 'bhome.html';
+    }
+  </script>
 </body>
 </html>
+
