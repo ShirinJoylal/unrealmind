@@ -17,6 +17,7 @@
 
   *{box-sizing:border-box}
   body{
+    background-size:cover;
     margin:0;
     min-height:100vh;
     display:grid;
@@ -24,6 +25,7 @@
     background: radial-gradient(1200px 800px at 65% 35%, var(--bg2), var(--bg1) 60%);
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
     color:var(--text);
+    overflow-x: hidden;
   }
 
   /* Navigation */
@@ -76,11 +78,6 @@
     transition: all .3s ease;
   }
 
-  /* Mobile menu hidden by default */
-  .topnav ul {
-    transition: max-height .4s ease;
-  }
-
   /* Responsive */
   @media (max-width: 700px){
     .topnav ul {
@@ -93,6 +90,7 @@
       align-items: center;
       max-height: 0;
       overflow: hidden;
+      transition: max-height .4s ease;
     }
     .topnav ul.open {
       max-height: 300px;
@@ -118,6 +116,7 @@
       inset 0 0 0 1px rgba(255,255,255,0.06);
     backdrop-filter: blur(6px);
     margin-top: 100px;
+    animation: fadeIn 2s ease;
   }
 
   svg{
@@ -131,6 +130,7 @@
     font-weight: 800;
     font-size: clamp(28px, 6vw, 56px);
     line-height: 1;
+    animation: slideUp 1.5s ease;
   }
   .wordmark h2{
     margin:0;
@@ -138,8 +138,10 @@
     font-size: clamp(14px, 2.75vw, 26px);
     letter-spacing: .2em;
     opacity:.95;
+    animation: slideUp 2s ease;
   }
 
+  /* Animations */
   @keyframes glow-shift {
     0%   { stroke-dashoffset: 0;   }
     100% { stroke-dashoffset: -240;}
@@ -150,15 +152,26 @@
     opacity:.75;
   }
 
+  @keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.95);}
+    to {opacity: 1; transform: scale(1);}
+  }
+  @keyframes slideUp {
+    from {opacity: 0; transform: translateY(30px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+
   .content{
-    max-width: 720px;
+    max-width: 800px;
     text-align: center;
     font-size: 18px;
     line-height: 1.6;
     margin: 20px auto;
     color: #e9eeed;
+    animation: fadeIn 3s ease;
   }
 
+  
   nav a{
     display:inline-block;
     margin:20px auto;
@@ -168,20 +181,15 @@
     color:#000;
     font-weight:600;
     text-decoration:none;
-    transition: background .3s;
+    transition: background .3s,color .3s;
   }
-  nav a:hover{
-    background: var(--stroke);
-  }
+  
+
 </style>
 </head>
-<body>
-  <div class="topnav">
-    <div class="menu-toggle" id="menuToggle">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
+<body >
+  
+  
     <ul id="navMenu">
       <li><a class="active" href="bhome.html">Home</a></li>
       <li><a href="econnection.html">Contact</a></li>
@@ -242,33 +250,120 @@
     </div>
   </div>
 
-  <h2 class="content">QUANTUM theory</h2>
-  <p class="content">
-    Explore the fascinating world of quantum mechanics, where particles exist in multiple states
-    and the universe is governed by probabilities rather than certainties...
-  </p>
-  <p class="content">
-    Quantum theories are well known, accepted and proven experimentally, and they define all about our universe
-    and how it works at the smallest scales.
-  </p>
+<div>
+  <style>
+    /* Animations on buttons */ 
+    @keyframes fadeIn {
+    from {opacity: 0; transform: scale(0.95);}
+    to {opacity: 1; transform: scale(1);}
+     }
+  @keyframes slideUp {
+    from {opacity: 0; transform: translateY(30px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  /* needed button*/
+  .first-button {
+    display: inline-block;
+    padding: 50px 5px;
+    font-size: 18px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(127, 209, 255, 0.5);
+    cursor: pointer;
+    transition:  1s ease, box-shadow 1s ease, transform 1s ease;
+  }
 
-  <nav>
-    <a href="chomesample.html">Third Page</a>
-  </nav>
+  .first-button:hover {
+    background: rgba(197, 200, 212, 0.1);
+    box-shadow: 0 0 20px rgba(127, 209, 255, 0.8), 0 0 30px rgba(127, 209, 255, 0.6);
+    transform: scale(1.09);
+  }
+  .first-button span {
+    font-family: "poppins",sans-serif;
+    font-size: 13px;
+    font-weight:bold;
+    color:rgb(205, 205, 232);
+  }
+  
 
-<script>
-  const menuToggle = document.getElementById("menuToggle");
-  const navMenu = document.getElementById("navMenu");
+  /* needed button2*/
+  .second-button {
+    display: inline-block;
+    padding: 50px 5px;
+    font-size: 18px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(127, 209, 255, 0.5);
+    cursor: pointer;
+    transition:  1s ease, box-shadow 1s ease, transform 1s ease;
+  }
 
-  menuToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("open");
-    menuToggle.classList.toggle("open");
-  });
-</script>
+  .second-button:hover {
+    background: rgba(197, 200, 212, 0.1);
+    box-shadow: 0 0 20px rgba(127, 209, 255, 0.8), 0 0 30px rgba(127, 209, 255, 0.6);
+    transform: scale(1.09);
+  }
+  .second-button span {
+    font-family: "poppins",sans-serif;
+    font-size: 13px;
+    font-weight:bold;
+    color:rgb(205, 205, 232);
+  }
+  
+  /* needed button3*/
+  .third-button {
+    display: inline-block;
+    padding: 50px 5px;
+    font-size: 18px;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 10px rgba(127, 209, 255, 0.5);
+    cursor: pointer;
+    transition:  1s ease, box-shadow 1s ease, transform 1s ease;
+  }
+
+  .third-button:hover {
+    background: rgba(197, 200, 212, 0.1);
+    box-shadow: 0 0 20px rgba(127, 209, 255, 0.8), 0 0 30px rgba(127, 209, 255, 0.6);
+    transform: scale(1.09);
+  }
+  .third-button span {
+    font-family: "poppins",sans-serif;
+    font-size: 13px;
+    font-weight:bold;
+    color:rgb(205, 205, 232);
+  }
+  
+</style>
+</div>
+<!-- Buttons wrapper -->
+<div style="position:absolute; left:20px; top:600px; display:flex; gap:20px;">
+  <a href="test2.html">
+  <button class="first-button">
+    <span style="font-size: medium;">
+      SUPER POSITION,<br>particles can exist<br> in multiple states<br> simultaneously<br> until they are observed,<br> collapsing to a single state <br>when measured.<br>
+     
+    </span>
+  </button>
+  </a>
+<a href="test4.html">
+  <button class="second-button">
+    <span style="font-size: medium;">
+      DOUBLE SLIT EXPERIMENT,<br>particles can exist<br> in multiple states<br> simultaneously<br> until they are observed,<br> collapsing to a single state <br>when measured.<br>
+    </span>
+  </button>
+  </a>
+
+  <button class="third-button">
+    <span style="font-size: medium;">
+      ENTANGLEMENT,<br>particles can exist<br> in multiple states<br> simultaneously<br> until they are observed,<br> collapsing to a single state <br>when measured.<br>
+    </span>
+  </button>
 </body>
 </html>
-
-
-
-
-          

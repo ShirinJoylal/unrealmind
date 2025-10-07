@@ -8,93 +8,188 @@
       background-color: black;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      height: 100vh;
+      overflow: hidden; /* prevent body scroll */
     }
-    .logo {
+
+    /* Top Navigation */
+    .topnav ul {
+      list-style: none;
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      background: #111;
+    }
+    .topnav ul li {
+      margin: 0 15px;
+    }
+    .topnav ul li a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .topnav ul li a:hover,
+    .topnav ul li a.active {
+      color: #2a9df4;
+    }
+
+    /* Main Layout */
+    .container {
+      display: flex;
+      height: calc(100vh - 50px); /* full height minus nav */
+    }
+
+    /* Left column fixed */
+    .left {
+      width: 50%;
+      min-width: 300px;
       text-align: center;
-      padding-top: 20px; /* space from the top */
+      background: black;
+      overflow: auto; /* just in case logos overflow */
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      height: 100%;
     }
+
+    /* Right column scrollable */
+    .right {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px 0 0 10px;
+      overflow-y: auto; /* scrollable content */
+    }
+
     .logo-text {
       font-size: 40px;
       font-weight: bold;
       fill: #2a9df4;
-      font-family: Arial, sans-serif;
+    }
+
+    /* Make SVGs responsive */
+    svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        overflow: auto; /* allow scrolling on small screens */
+      }
+      .container {
+        flex-direction: column;
+        height: auto;
+      }
+      .left {
+        width: 100%;
+        height: auto;
+        position: relative;
+      }
+      .right {
+        margin-top: 20px;
+        border-radius: 10px;
+        max-height: 70vh;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Navigation -->
   <div class="topnav home">
     <ul>
       <li><a class="active" href="dhome4.html">Home</a></li>
       <li><a href="gcontact4.html">Contact</a></li>
     </ul>
   </div>
-  <div class="logo">
-    <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-      <!-- Blue Circle Background -->
-      <circle cx="150" cy="130" r="120" fill="#2a9df4" stroke="#1d6fb8" stroke-width="5"/>
-      
-      <!-- Planet -->
-      <circle cx="150" cy="130" r="60" fill="#ffd966" />
-      
-      <!-- Ring -->
-      <ellipse cx="150" cy="130" rx="110" ry="35" fill="none" stroke="white" stroke-width="12"/>
-      
-      <!-- Spiral Galaxy -->
-      <path d="M230 60
-               c20 10 20 40 -5 45
-               c-25 5 -35 -25 -15 -35
-               c15 -10 30 5 15 15"
-            stroke="white" stroke-width="6" fill="none" />
-      
-      <!-- Stars -->
-      <polygon points="80,50 85,65 100,65 88,75 93,90 80,82 67,90 72,75 60,65 75,65" fill="black"/>
-      <polygon points="220,200 225,210 235,210 228,218 232,228 220,222 208,228 212,218 205,210 215,210" fill="black"/>
-      <polygon points="120,230 125,240 135,240 128,248 132,258 120,252 108,258 112,248 105,240 115,240" fill="black"/>
 
-      <!-- Text -->
-      <text x="150" y="290" text-anchor="middle" class="logo-text">TOE</text>
-    
-    </svg>
-    <h style="color: white; font-size: 20px; font-family: montserrat alt-extrabold;">Theory Of Everything(TOE)</h>
-    <p style="color:white;font-size:20px;font-family:montserrat alt-extrabold;"> However the relativity theory and quantum theory are well accepted they wont interconnect eachother,
-      they interconnect but not completely, so we are trying to connect them with a new theory called Theory of Everything(TOE).
-      they both are successful in their own way, but they are not complete.they both cant be stay together,
-      but we need both of them for studies and explorations. 
-    </p>
-  
-    <p2 style="color:white;font-size:20px;font-family:montserrat alt-extrabold;">Is there a need to connect both theories? well,yes for scientist they are working hard to propose
-      a theory to connect them both then only we can explain our universe we cant explain it 
-      with two theories with different properties and different equations.quantum theory states that ou universe is made up of particles and waves,
-      whereas relativity theory states that our universe is made up of fabric of space and time,
-      so we need a theory to connect them both then only we can solve two major problems The big bang singularity where 
-      the universe started from a singularity and the black hole where a singularity has infinite density and zero volume.
+  <!-- Main Layout -->
+  <div class="container">
+    <!-- Left Side with Logos -->
+    <div class="left">
+      <!-- Planet Logo -->
+      <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="150" cy="130" r="120" fill="#2a9df4" stroke="#1d6fb8" stroke-width="5"/>
+        <circle cx="150" cy="130" r="60" fill="#ffd966" />
+        <ellipse cx="150" cy="130" rx="110" ry="35" fill="none" stroke="white" stroke-width="12"/>
+        <path d="M230 60
+                 c20 10 20 40 -5 45
+                 c-25 5 -35 -25 -15 -35
+                 c15 -10 30 5 15 15"
+              stroke="white" stroke-width="6" fill="none" />
+        <polygon points="80,50 85,65 100,65 88,75 93,90 80,82 67,90 72,75 60,65 75,65" fill="black"/>
+        <polygon points="220,200 225,210 235,210 228,218 232,228 220,222 208,228 212,218 205,210 215,210" fill="black"/>
+        <polygon points="120,230 125,240 135,240 128,248 132,258 120,252 108,258 112,248 105,240 115,240" fill="black"/>
+        <text x="150" y="290" text-anchor="middle" class="logo-text">TOE</text>
+      </svg>
 
-    </p2>
-     </div>
-     
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My Webpage</title>
-</head>
-<body>
-  <div id="logo-root"></div>
+      <!-- Relativity vs Quantum Diagram -->
+      <div id="logo-root"></div>
+    </div>
 
-  <!-- Just use <script> without src since you already have inline JS -->
+    <!-- Right Side (Scrollable) -->
+    <div class="right">
+      <h2>Theory Of Everything (TOE)</h2>
+      <p>
+        However the relativity theory and quantum theory are well accepted they won’t interconnect each other,
+        they interconnect but not completely, so we are trying to connect them with a new theory called
+        <strong>Theory of Everything (TOE)</strong>.
+      </p>
+      <p>
+        Relativity describes the universe as a fabric of space-time, while quantum theory explains it
+        through particles and waves. Scientists are working hard to unify these into one framework, which
+        could help explain black holes, the Big Bang, and much more.
+      </p>
+      <p>
+        Quantum theory states that our universe is made up of particles and waves,
+        whereas relativity states that our universe is made up of fabric of space and time.
+        A unifying theory would solve two major problems: the big bang singularity (where the universe
+        started from a singularity) and the black hole singularity (infinite density, zero volume).
+      </p>
+      <p>
+        Scientists continue their search for this ultimate framework that could elegantly describe
+        everything in the cosmos — from galaxies and black holes to atoms and quarks.
+      </p>
+      <style>
+        p.spacetime {
+    font-size: 3rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    position: relative;
+    color: white;
+    background: linear-gradient(270deg, #00f, #0ff, #f0f, #ff0, #0f0);
+    background-size: 800% 800%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: warp 8s ease infinite;
+  }
+
+  @keyframes warp {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+</style>
+      <p class="spacetime">  </p>
+       
+      </p>
+    </div>
+  </div>
+
+  <!-- Script for Relativity-Quantum Logo -->
   <script>
-    // relativity-quantum-logo.js
     (function () {
       const SVG_NS = "http://www.w3.org/2000/svg";
-
       function el(name, attrs = {}, ns = SVG_NS) {
         const node = document.createElementNS(ns, name);
         for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
         return node;
       }
-
       function textWithTspans(x, y, anchor, fontSize, contentLines, opts = {}) {
         const t = el("text", { x, y, "text-anchor": anchor, "font-size": fontSize, ...opts });
         contentLines.forEach((line, i) => {
@@ -108,7 +203,6 @@
         });
         return t;
       }
-
       function createRelativityQuantumLogo() {
         const svg = el("svg", {
           viewBox: "0 0 900 560",
@@ -116,41 +210,29 @@
           "aria-labelledby": "ttl desc",
           style: "width:100%;height:auto;display:block"
         });
-
         const title = el("title", { id: "ttl" });
         title.textContent = "UNREALMIND";
         const desc = el("desc", { id: "desc" });
         desc.textContent = "Two-circle Venn diagram with overlap labeled Quantum Field Theory.";
         svg.append(title, desc);
-
         const g = el("g", { transform: "translate(0,30)" });
-
-        // Circles
         g.append(
           el("circle", { cx: 360, cy: 260, r: 195, fill: "#6fa8ff", opacity: ".55" }),
           el("circle", { cx: 540, cy: 260, r: 195, fill: "#7bd17b", opacity: ".55" }),
           el("ellipse", { cx: 450, cy: 260, rx: 140, ry: 170, fill: "#cfd8ff", opacity: ".25" })
         );
-
-        // Left label
         g.append(
           textWithTspans(300, 255, "middle", 18, ["Relativity"], { "font-weight": "700" }),
           textWithTspans(300, 282, "middle", 14, ["(Space, Time,", "Gravity)"])
         );
-
-        // Right label
         g.append(
           textWithTspans(600, 255, "middle", 18, ["Quantum Theory"], { "font-weight": "700" }),
           textWithTspans(600, 282, "middle", 14, ["(Particles,", "Uncertainty)"])
         );
-
-        // Center overlap
         g.append(
           textWithTspans(450, 250, "middle", 17, ["Quantum Field Theory"], { "font-weight": "700" }),
           textWithTspans(450, 273, "middle", 14, ["(QFT) ✓ Successful Merge"])
         );
-
-        // Footer note
         const small = textWithTspans(
           450,
           455,
@@ -162,40 +244,20 @@
         small.setAttribute("font-weight", "700");
         small.setAttribute("fill", "#b00");
         g.appendChild(small);
-
         svg.appendChild(g);
         return svg;
       }
-
       function mount(target = "#logo-root") {
         const root = typeof target === "string" ? document.querySelector(target) : target;
         if (!root) return;
         root.appendChild(createRelativityQuantumLogo());
       }
-
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", () => mount());
       } else {
         mount();
       }
-
-      window.createRelativityQuantumLogo = createRelativityQuantumLogo;
-      window.mountRelativityQuantumLogo = mount;
     })();
   </script>
 </body>
 </html>
-
-
- 
-
-    
-
-
-
-    
-  
-
-
-
-

@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Quantum Game Lab — Superposition & Mini-Games (Accurate)</title>
+<style>
+:root{--bg:#071427;--panel:#0f1724;--accent:#6ee7b7;--muted:#93c5fd;--glass:rgba(255,255,255,0.03);}
+html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,#02040a 0%, #071028 60%);color:#e6eef8;}
+.app{display:grid;grid-template-columns:1fr 360px;gap:18px;height:100vh;padding:18px;box-sizing:border-box;}
+.card{background:var(--glass);border-radius:12px;padding:12px;display:flex;flex-direction:column;}
+canvas{width:100%;height:100%;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);}
+.panel{background:linear-gradient(180deg,#071026aa, #07102655);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;}
+label{font-size:13px;color:#cfe7ff;}
+.row{display:flex;gap:8px;align-items:center;}
+input[type=range]{width:100%;}
+button{background:transparent;border:1px solid rgba(255,255,255,0.12);padding:8px;border-radius:8px;color:#dff;cursor:pointer;}
+.small{font-size:12px;color:#9fb6cf;}
+.note{font-size:12px;color:#9fb6cf;margin-top:6px;}
+.controls{display:flex;flex-direction:column;gap:8px;}
+.group{display:flex;flex-direction:column;gap:6px;}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="card">
+    <h3 style="margin:6px 0">Quantum Superposition — Accurate Time Evolution</h3>
+    <div style="flex:1;display:flex;gap:10px">
+      <canvas id="wfCanvas"></canvas>
+    </div>
+    <div class="note">Units: ħ = 1, m = 1. This demo uses a split-step Fourier method for realistic wave packet evolution.</div>
+  </div>
+
+  <div class="panel card">
+    <div class="controls">
+
+      <!-- Superposition Controls -->
+      <div class="group">
+        <label>Initial left:right weight (0..1)</label>
+        <input id="amp" type="range" min="0" max="1" step="0.01" value="0.5">
+      </div>
+      <div class="group">
+        <label>Separation (distance between Gaussian centers)</label>
+        <input id="sep" type="range" min="0.5" max="6" step="0.01" value="2.4">
+      </div>
+      <div class="group">
+        <label>Phase difference (radians)</label>
+        <input id="phase" type="range" min="0" max="6.283" step="0.01" value="0.5">
+      </div>
+      <div class="group">
+        <label>Gaussian width σ</label>
+        <input id="sigma" type="range" min="0.08" max="1.2" step="0.01" value="0.25">
+      </div>
+      <div class="group row">
+        <label class="small"><input id="showReal" type="checkbox" checked> Real</label>
+        <label class="small"><input id="showImag" type="checkbox"> Imag</label>
+        <label class="small"><input id="showProb" type="checkbox" checked> |ψ|²</label>
+      </div>
+
+      <!-- Run/Reset Buttons -->
+      <div class="row">
+        <button id="runBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+        <button id="measureBtn">Measure (Collapse)</button>
+      </div>
+
+      <!-- Mini-Game: Single Guess -->
+      <div class="group">
+        <label>Guess particle position</label>
+        <input id="guess" type="range" min="-5" max="5" step="0.1" value="0">
+        <div id="guessLabel" class="small">Your guess: 0</div>
+        <button id="submitGuessBtn">Submit Guess</button>
+        <div id="feedback" class="small"></div>
+        <div id="score" class="small">Score: 0</div>
+      </div>
+
+      <!-- Mini-Game: Range Guess -->
+      <div class="group">
+        <label>Guess a range (Bonus Game)</label>
+        <input id="guessMin" type="range" min="-5" max="5" step="0.1" value="-1">
+        <input id="guessMax" type="range" min="-5" max="5" step="0.1" value="1">
+        <div id="rangeLabel" class="small">Your range: -1 to 1</div>
+      </div>
+
+      <!-- Stats -->
+      <div id="stats" class="small"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ------------------------
+// Canvas setup
+// ------------------------
+const canvas = document.getElementById('wfCanvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+let W = canvas.width/(window.devicePixelRatio||1);
+let H = canvas.height/(window.devicePixelRatio||1);
+
+// ------------------------
+// Controls
+// ------------------------
+const ampS = document.getElementById('amp');
+const sepS = document.getElementById('sep');
+const phaseS = document.getElementById('phase');
+const sigmaS = document.getElementById('sigma');
+const showRealC = document.getElementById('showReal');
+const showImagC = document.getElementById('showImag');
+const showProbC = document.getElementById('showProb');
+const runBtn = document.getElementById('runBtn');
+const resetBtn = document.getElementById('resetBtn');
+const measureBtn = document.getElementById('measureBtn');
+const guessS = document.getElementById('guess');
+const guessLabel = document.getElementById('guessLabel');
+const submitGuessBtn = document.getElementById('submitGuessBtn');
+const feedback = document.getElementById('feedback');
+const scoreBox = document.getElementById('score');
+const guessMin = document.getElementById('guessMin');
+const guessMax = document.getElementById('guessMax');
+const rangeLabel = document.getElementById('rangeLabel');
+
+// ------------------------
+// Simulation parameters
+// ------------------------
+const X = 10, Nx = 512, dx = 2*X/(Nx-1);
+let psiRe = new Float64Array(Nx), psiIm = new Float64Array(Nx);
+let score=0, collapsed=false, collapsedSide=null;
+
+// Momentum grid
+const dk = Math.PI/X;
+let kArr = new Float64Array(Nx);
+for(let j=0;j<Nx;j++) kArr[j]=(j<Nx/2)? j*dk : (j-Nx)*dk;
+
+// ------------------------
+// FFT (naive DFT for demo)
+// ------------------------
+function fft(re,im){
+  const N=re.length;
+  let outRe=new Float64Array(N), outIm=new Float64Array(N);
+  for(let k=0;k<N;k++){
+    let sumRe=0,sumIm=0;
+    for(let n=0;n<N;n++){
+      const angle=-2*Math.PI*k*n/N;
+      const c=Math.cos(angle), s=Math.sin(angle);
+      sumRe+=re[n]*c-im[n]*s;
+      sumIm+=re[n]*s+im[n]*c;
+    }
+    outRe[k]=sumRe; outIm[k]=sumIm;
+  }
+  return [outRe,outIm];
+}
+function ifft(re,im){
+  const N=re.length;
+  let outRe=new Float64Array(N), outIm=new Float64Array(N);
+  for(let n=0;n<N;n++){
+    let sumRe=0,sumIm=0;
+    for(let k=0;k<N;k++){
+      const angle=2*Math.PI*k*n/N;
+      const c=Math.cos(angle), s=Math.sin(angle);
+      sumRe+=re[k]*c-im[k]*s;
+      sumIm+=re[k]*s+im[k]*c;
+    }
+    outRe[n]=sumRe/N; outIm[n]=sumIm/N;
+  }
+  return [outRe,outIm];
+}
+
+// ------------------------
+// Init wavefunction
+// ------------------------
+function initPsi(){
+  const amp=parseFloat(ampS.value), sep=parseFloat(sepS.value), phase=parseFloat(phaseS.value), sigma=parseFloat(sigmaS.value);
+  const muL=-sep/2, muR=sep/2;
+  let sum=0;
+  for(let j=0;j<Nx;j++){
+    const x=-X+j*dx;
+    const gL=Math.exp(-((x-muL)**2)/(2*sigma**2));
+    const gR=Math.exp(-((x-muR)**2)/(2*sigma**2));
+    const a=Math.sqrt(amp), b=Math.sqrt(Math.max(0,1-amp));
+    const re=a*gL+b*Math.cos(phase)*gR;
+    const im=b*Math.sin(phase)*gR;
+    psiRe[j]=re; psiIm[j]=im;
+    sum+=re*re+im*im;
+  }
+  const norm=Math.sqrt(sum*dx)||1;
+  for(let j=0;j<Nx;j++){ psiRe[j]/=norm; psiIm[j]/=norm; }
+  collapsed=false; collapsedSide=null; feedback.textContent='';
+}
+initPsi();
+
+// ------------------------
+// Time evolution (split-step Fourier)
+// ------------------------
+const dtSim=0.02;
+function evolvePsi(){
+  let [psiKRe,psiKIm]=fft(psiRe,psiIm);
+  for(let j=0;j<Nx;j++){
+    const k=kArr[j];
+    const phase=-0.5*k*k*dtSim;
+    const c=Math.cos(phase), s=Math.sin(phase);
+    const re=psiKRe[j], im=psiKIm[j];
+    psiKRe[j]=re*c-im*s;
+    psiKIm[j]=re*s+im*c;
+  }
+  [psiRe,psiIm]=ifft(psiKRe,psiKIm);
+}
+
+// ------------------------
+// Measurement & guessing
+// ------------------------
+function measureCollapse(){
+  const mid=Math.floor(Nx/2);
+  let leftSum=0;
+  for(let i=0;i<mid;i++) leftSum+=psiRe[i]*psiRe[i]+psiIm[i]*psiIm[i];
+  const leftProb=leftSum*dx;
+  collapsedSide=(Math.random()<leftProb)?'L':'R'; collapsed=true;
+
+  const sep=parseFloat(sepS.value), sigma=parseFloat(sigmaS.value)*0.6;
+  const mu=(collapsedSide==='L')?-sep/2:sep/2;
+  let sum=0;
+  for(let j=0;j<Nx;j++){
+    const x=-X+j*dx;
+    const g=Math.exp(-((x-mu)**2)/(2*sigma**2));
+    psiRe[j]=g; psiIm[j]=0; sum+=g*g;
+  }
+  const norm=Math.sqrt(sum*dx)||1;
+  for(let j=0;j<Nx;j++){ psiRe[j]/=norm; psiIm[j]/=norm; }
+  evaluateGuess();
+}
+function evaluateGuess(){
+  if(!collapsed){ feedback.textContent="Collapse first!"; return; }
+  const sep=parseFloat(sepS.value);
+  const actual=(collapsedSide==='L')?-sep/2:sep/2;
+  const guess=parseFloat(guessS.value);
+  const error=Math.abs(guess-actual);
+  if(error<0.5){ feedback.textContent="🎉 Spot on!"; score+=10; }
+  else if(error<1.5){ feedback.textContent="👍 Pretty close!"; score+=5; }
+  else{ feedback.textContent="❌ Missed. Actual: "+actual.toFixed(2); }
+  const minR=parseFloat(guessMin.value), maxR=parseFloat(guessMax.value);
+  if(actual>=Math.min(minR,maxR)&&actual<=Math.max(minR,maxR)){
+    feedback.textContent+=" + Bonus inside range!"; score+=5;
+  }
+  scoreBox.textContent="Score: "+score;
+}
+
+// ------------------------
+// Draw function
+// ------------------------
+function draw(){
+  W=canvas.width/(window.devicePixelRatio||1);
+  H=canvas.height/(window.devicePixelRatio||1);
+  ctx.clearRect(0,0,W,H);
+
+  if(!collapsed) evolvePsi();
+
+  const margin=50, plotW=W-2*margin, plotH=H-2*margin;
+  const density=new Float64Array(Nx);
+  let maxD=0;
+  for(let j=0;j<Nx;j++){
+    const p=psiRe[j]*psiRe[j]+psiIm[j]*psiIm[j];
+    density[j]=p; if(p>maxD) maxD=p;
+  }
+  if(showProbC.checked){
+    ctx.beginPath();
+    for(let j=0;j<Nx;j++){
+      const Xpos=margin+(j/(Nx-1))*plotW;
+      const Ypos=H-margin-(density[j]/maxD)*(plotH*0.45);
+      if(j===0) ctx.moveTo(Xpos,Ypos); else ctx.lineTo(Xpos,Ypos);
+    }
+    ctx.lineTo(W-margin,H-margin); ctx.lineTo(margin,H-margin); ctx.closePath();
+    const g=ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'rgba(110,231,183,0.4)'); g.addColorStop(1,'rgba(110,231,183,0.06)');
+    ctx.fillStyle=g; ctx.fill();
+  }
+  let maxAmp=1e-12;
+  for(let i=0;i<Nx;i++){
+    maxAmp=Math.max(maxAmp,Math.abs(psiRe[i]),Math.abs(psiIm[i]));
+  }
+  if(showRealC.checked){
+    ctx.beginPath(); ctx.lineWidth=2; ctx.strokeStyle='rgba(157,213,255,1)';
+    for(let j=0;j<Nx;j++){
+      const Xpos=margin+(j/(Nx-1))*plotW;
+      const Ypos=H-margin-(psiRe[j]/maxAmp)*(plotH*0.4);
+      if(j===0) ctx.moveTo(Xpos,Ypos); else ctx.lineTo(Xpos,Ypos);
+    }
+    ctx.stroke();
+  }
+  if(showImagC.checked){
+    ctx.beginPath(); ctx.setLineDash([6,4]); ctx.lineWidth=2; ctx.strokeStyle='rgba(255,183,197,1)';
+    for(let j=0;j<Nx;j++){
+      const Xpos=margin+(j/(Nx-1))*plotW;
+      const Ypos=H-margin-(psiIm[j]/maxAmp)*(plotH*0.4);
+      if(j===0) ctx.moveTo(Xpos,Ypos); else ctx.lineTo(Xpos,Ypos);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+let running=true;
+function loop(){ if(running) draw(); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+
+// ------------------------
+// Events
+// ------------------------
+runBtn.addEventListener('click',()=>{running=!running;runBtn.textContent=running?'Pause':'Run';});
+resetBtn.addEventListener('click',()=>{initPsi();});
+measureBtn.addEventListener('click',measureCollapse);
+canvas.addEventListener('click',measureCollapse);
+submitGuessBtn.addEventListener('click',()=>{evaluateGuess();});
+guessS.addEventListener('input',()=>{guessLabel.textContent="Your guess: "+guessS.value;});
+guessMin.addEventListener('input',()=>{rangeLabel.textContent=`Your range: ${guessMin.value} to ${guessMax.value}`;});
+guessMax.addEventListener('input',()=>{rangeLabel.textContent=`Your range: ${guessMin.value} to ${guessMax.value}`;});
+[ampS,sepS,phaseS,sigmaS].forEach(el=>el.addEventListener('input',initPsi));
+</script>
+</body>
+</html>

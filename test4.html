@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Young's Double-Slit Experiment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #222;
+    }
+    header {
+      background: #004080;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    section {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+    h2 {
+      color: #004080;
+    }
+    img {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+    }
+    .formula {
+      background: #eee;
+      padding: 10px;
+      margin: 10px 0;
+      border-left: 4px solid #004080;
+      font-family: "Courier New", monospace;
+    }
+    footer {
+      background: #004080;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Young's Double-Slit Experiment</h1>
+  </header>
+
+  <section>
+    <h2>1. Introduction</h2>
+    <p>
+      The Young’s double-slit experiment demonstrates the <b>wave nature of light</b> by showing an 
+      interference pattern when light passes through two narrow slits.
+    </p>
+
+    <img src="https://javalab.org/wp-content/uploads/youngs_double_slit.png" 
+         alt="Young's Double Slit Experiment Diagram">
+
+    <h2>2. Experimental Setup</h2>
+    <ul>
+      <li>Monochromatic light source (e.g., laser)</li>
+      <li>Two very narrow, closely spaced slits</li>
+      <li>A screen at distance <i>D</i> from the slits</li>
+    </ul>
+
+    <h2>3. Theory</h2>
+    <p>
+      Light from the two slits acts as coherent sources of waves. These waves overlap on the screen 
+      and produce an interference pattern of bright and dark fringes.
+    </p>
+    <div class="formula">
+      Path Difference: Δ = d sinθ
+    </div>
+    <div class="formula">
+      Condition for Bright Fringe: Δ = mλ
+    </div>
+    <div class="formula">
+      Condition for Dark Fringe: Δ = (m + ½)λ
+    </div>
+
+    <p>
+      For small angles (θ ≈ y/D):
+    </p>
+    <div class="formula">
+      y<sub>m</sub> = (m λ D) / d
+    </div>
+    <p>
+      The distance between two bright fringes (fringe width):
+    </p>
+    <div class="formula">
+      Δy = λD / d
+    </div>
+
+    <h2>4. Observations</h2>
+    <p>
+      - Alternating bright and dark fringes appear on the screen.<br>
+      - Central bright fringe at θ = 0.<br>
+      - Fringe spacing is uniform and depends on λ, D, and d.
+    </p>
+
+    <h2>5. Significance</h2>
+    <p>
+      This experiment provided strong evidence of the wave nature of light. 
+      In modern physics, repeating the experiment with electrons or photons shows 
+      <b>wave-particle duality</b>.
+    </p>
+  </section>
+   <a href="test5.html">
+  <button class="button1"> wave-particle duality </button>
+</a>
+
+<style>
+  .button1 {
+    background-color: #004080; 
+    border: none; 
+    color: white; 
+    padding: 10px 20px; 
+    text-align: center; 
+    text-decoration: none; 
+    display: inline-block; 
+    font-size: 16px; 
+    margin: 4px 2px; 
+    cursor: pointer; 
+    border-radius: 12px;
+  }
+</style>
+
+  <footer>
+    <p>Created for Educational Purposes — Young's Double-Slit Experiment</p>
+  </footer>
+ 
+</body>
+</html>

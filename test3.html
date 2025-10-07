@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bloch Sphere — Interactive Tutorial</title>
+  <style>
+    :root{--bg:#0b1020;--panel:#0f1724;--muted:#94a3b8;--accent:#7dd3fc;--glass:rgba(255,255,255,0.04);--card:#0b1220}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071028 0%, #071827 60%);}
+    .wrap{display:grid;grid-template-columns:520px 1fr;gap:20px;padding:28px;max-width:1200px;margin:18px auto;align-items:start}
+    header{grid-column:1/3;display:flex;align-items:center;gap:18px}
+    h1{margin:0;font-size:20px}
+    .subtitle{color:var(--muted);font-size:13px}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
+    .left{display:flex;flex-direction:column;gap:12px}
+    canvas#gl{width:100%;height:420px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:block}
+    .controls{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .row{display:flex;gap:8px;align-items:center}
+    label{font-size:13px;color:var(--muted);min-width:64px}
+    input[type=range]{-webkit-appearance:none;width:100%}
+    input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:6px;background:linear-gradient(90deg,#1f2937,#0ea5e9)}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;margin-top:-6px;width:18px;height:18px;border-radius:50%;background:#fff}
+    .value{min-width:78px;text-align:right;color:#cfe8ff;font-weight:600}
+    .right{display:flex;flex-direction:column;gap:12px}
+    .explain{line-height:1.45;color:#dceefc}
+    pre.math{background:var(--glass);padding:10px;border-radius:8px;color:#eaf6ff;overflow:auto}
+    .info{display:flex;gap:12px;flex-wrap:wrap}
+    .small{font-size:13px;color:var(--muted)}
+    .axis-legend{display:flex;gap:10px;align-items:center}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .x{background:#f87171}.y{background:#fbbf24}.z{background:#60a5fa}
+    footer{grid-column:1/3;color:var(--muted);font-size:13px;margin-top:12px}
+    .code{background:#071428;border-radius:8px;padding:10px;color:#bfe9ff;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;font-size:13px}
+    @media (max-width:980px){.wrap{grid-template-columns:1fr;padding:18px}canvas#gl{height:300px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="card" style="display:flex;gap:12px;align-items:center">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v20" stroke="#7dd3fc" stroke-width="1.5" stroke-linecap="round"/><path d="M2 12h20" stroke="#60a5fa" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="9" stroke="#94a3b8" stroke-width="0.9" opacity="0.12"/></svg>
+        <div>
+          <h1>Bloch Sphere — Interactive tutorial</h1>
+          <div class="subtitle">Visualize single-qubit states, adjust θ and φ, and see the corresponding state vector &amp; spinor representation.</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="left card">
+      <canvas id="gl"></canvas>
+
+      <div class="controls" aria-hidden="false">
+        <div class="row">
+          <label for="theta">θ (theta)</label>
+          <input id="theta" type="range" min="0" max="3.141592653589793" step="0.001" value="1.5708">
+          <div class="value" id="thetaVal">π/2</div>
+        </div>
+        <div class="row">
+          <label for="phi">φ (phi)</label>
+          <input id="phi" type="range" min="0" max="6.283185307179586" step="0.001" value="0">
+          <div class="value" id="phiVal">0</div>
+        </div>
+        <div class="row">
+          <label for="autoSpin">Auto-spin</label>
+          <input id="autoSpin" type="checkbox">
+          <div class="small" style="margin-left:auto">Toggle continuous rotation</div>
+        </div>
+        <div class="row">
+          <button id="reset" style="padding:8px 12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe8ff">Reset</button>
+          <div style="margin-left:auto" class="small">Tip: drag the canvas to rotate view</div>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="axis-legend small card" style="padding:8px"> <span class="dot x"></span> X-axis (|+⟩) </div>
+        <div class="axis-legend small card" style="padding:8px"> <span class="dot y"></span> Y-axis (|+i⟩) </div>
+        <div class="axis-legend small card" style="padding:8px"> <span class="dot z"></span> Z-axis (|0⟩ / |1⟩) </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="card explain">
+        <h2 style="margin-top:0">What is the Bloch sphere?</h2>
+        <p>The Bloch sphere is a geometric representation of the state space of a single qubit (a two-level quantum system). Any pure qubit state can be written as:</p>
+        <pre class="math">|ψ⟩ = cos(θ/2) |0⟩ + e^{iφ} sin(θ/2) |1⟩
+where 0 ≤ θ ≤ π and 0 ≤ φ &lt; 2π.</pre>
+        <p>The pair (θ, φ) corresponds to a point on the unit sphere: θ is the polar angle (from the +Z axis) and φ is the azimuthal angle in the X–Y plane. Global phase is physically irrelevant, so states differing only by an overall phase are the same point on the sphere.</p>
+
+        <h3>Axes and notable states</h3>
+        <ul>
+          <li><strong>+Z (North pole):</strong> |0⟩ — the computational zero state (θ=0).</li>
+          <li><strong>-Z (South pole):</strong> |1⟩ — the computational one state (θ=π).</li>
+          <li><strong>+X, -X:</strong> |+⟩ = (|0⟩+|1⟩)/√2 and |−⟩ = (|0⟩−|1⟩)/√2 (θ=π/2, φ=0 or π).</li>
+          <li><strong>+Y, -Y:</strong> |+i⟩ = (|0⟩+i|1⟩)/√2 and |−i⟩ = (|0⟩−i|1⟩)/√2 (θ=π/2, φ=π/2 or 3π/2).</li>
+        </ul>
+
+        <h3>Why it's useful</h3>
+        <p>The Bloch sphere visualizes single-qubit gates as rotations around axes. For example, the Pauli-X gate is a 180° rotation around the X-axis (it flips |0⟩ and |1⟩). This geometric picture helps reason about quantum circuits, single-qubit control, and state evolution under Hamiltonians.</p>
+
+        <h3>Try it</h3>
+        <p>Move the <em>θ</em> and <em>φ</em> sliders or drag the canvas. The point on the sphere and the corresponding spinor (up to a global phase) update instantly. The code below shows the exact spinor returned for the chosen angles.</p>
+
+        <div style="margin-top:12px">
+          <div class="small">Spinor representation (global phase ignored):</div>
+          <pre class="code" id="spinor">|ψ⟩ = cos(θ/2) |0⟩ + e^{iφ} sin(θ/2) |1⟩</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-top:0">Math & useful formulas</h3>
+        <pre class="math">x = sinθ cosφ
+y = sinθ sinφ
+z = cosθ
+
+Measured probabilities (in computational basis):
+P(0) = |⟨0|ψ⟩|^2 = cos^2(θ/2)
+P(1) = sin^2(θ/2)</pre>
+        <div style="margin-top:10px" class="small">Want the corresponding density matrix or how gates rotate the vector? Ask and I’ll add interactive toggles for Pauli gates and rotations.</div>
+      </div>
+
+    </section>
+
+    <footer class="card small">Created for learning — interactive Bloch sphere. Built with raw WebGL (no external libs) and accessible controls.</footer>
+  </div>
+
+  <script>
+  /* Minimal WebGL-based Bloch sphere visualization (no external libs) */
+  // DISCLAIMER: this is a compact, educational implementation focused on clarity over performance.
+
+  // --- helper math ---
+  function deg(v){return v*180/Math.PI}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+
+  // canvas and basic 3D projection
+  const canvas = document.getElementById('gl');
+  const gl = canvas.getContext('2d'); // using 2D canvas for simplicity and portability
+
+  let W, H, cx, cy, R;
+  function resize(){
+    const dpr = window.devicePixelRatio || 1;
+    W = canvas.clientWidth * dpr;
+    H = canvas.clientHeight * dpr;
+    canvas.width = W; canvas.height = H;
+    cx = W/2; cy = H/2; R = Math.min(W,H)*0.38;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // camera / view
+  let cam = {rotX: -0.4, rotY: 0.6, distance: 3};
+  let dragging=false, last={x:0,y:0};
+  canvas.addEventListener('pointerdown', (e)=>{dragging=true; last={x:e.clientX,y:e.clientY}; canvas.setPointerCapture(e.pointerId)});
+  window.addEventListener('pointerup', ()=>dragging=false);
+  window.addEventListener('pointermove', (e)=>{ if(!dragging) return; const dx=(e.clientX-last.x)/200; const dy=(e.clientY-last.y)/200; cam.rotY+=dx; cam.rotX+=dy; last={x:e.clientX,y:e.clientY}; });
+
+  // parameters
+  const thetaInput = document.getElementById('theta');
+  const phiInput = document.getElementById('phi');
+  const thetaVal = document.getElementById('thetaVal');
+  const phiVal = document.getElementById('phiVal');
+  const spinorEl = document.getElementById('spinor');
+  const autoSpin = document.getElementById('autoSpin');
+  const resetBtn = document.getElementById('reset');
+
+  function formatAngle(v){
+    // show nice pi multiples for common values
+    if(Math.abs(v - Math.PI/2) < 1e-3) return 'π/2';
+    if(Math.abs(v - Math.PI) < 1e-3) return 'π';
+    if(Math.abs(v) < 1e-3) return '0';
+    return v.toFixed(3);
+  }
+
+  function updateText(){
+    const th = parseFloat(thetaInput.value);
+    const ph = parseFloat(phiInput.value);
+    thetaVal.textContent = formatAngle(th);
+    phiVal.textContent = formatAngle(ph);
+    // spinor text
+    const cth = Math.cos(th/2); const sth = Math.sin(th/2);
+    function fmt(x){return Math.abs(x-1)<1e-9? '1' : Math.abs(x)<1e-9? '0' : x.toFixed(3)}
+    spinorEl.textContent = `|ψ⟩ = (${fmt(cth)}) |0⟩ + e^{i(${ph.toFixed(3)})} · (${fmt(sth)}) |1⟩`;
+  }
+  thetaInput.addEventListener('input', updateText);
+  phiInput.addEventListener('input', updateText);
+  resetBtn.addEventListener('click', ()=>{thetaInput.value = Math.PI/2; phiInput.value=0; cam.rotX=-0.4; cam.rotY=0.6; updateText();});
+  updateText();
+
+  // --- 3D utilities ---
+  function rotY(a){ const c=Math.cos(a), s=Math.sin(a); return (p)=>({x:c*p.x + s*p.z, y:p.y, z:-s*p.x + c*p.z}); }
+  function rotX(a){ const c=Math.cos(a), s=Math.sin(a); return (p)=>({x:p.x, y:c*p.y - s*p.z, z:s*p.y + c*p.z}); }
+
+  function project(p){ // simple perspective
+    const f = 400; const z = p.z + cam.distance; const s = f / (f + z);
+    return {x: cx + p.x*s*R, y: cy - p.y*s*R, s: s};
+  }
+
+  function draw(){
+    // clear
+    gl.clearRect(0,0,W,H);
+
+    const th = parseFloat(thetaInput.value);
+    const ph = parseFloat(phiInput.value);
+
+    // sphere mesh - draw latitudes & longitudes
+    gl.lineWidth = 1.2;
+    // base circle (outline)
+    gl.beginPath();
+    gl.arc(cx, cy, R, 0, Math.PI*2);
+    gl.strokeStyle = 'rgba(255,255,255,0.06)'; gl.stroke();
+
+    // draw longitude and latitude lines
+    for(let i=0;i<12;i++){
+      const a = i*(Math.PI*2/12);
+      // longitude circle (tilted by cam.rotX)
+      gl.beginPath();
+      for(let t=0;t<=Math.PI*2+0.01;t+=0.05){
+        const x = Math.cos(t)*Math.sin(a);
+        const y = Math.sin(t)*Math.sin(a);
+        const z = Math.cos(a);
+        let p = {x,y,z};
+        p = rotY(cam.rotY)(p); p = rotX(cam.rotX)(p);
+        const q = project(p);
+        if(t===0) gl.moveTo(q.x,q.y); else gl.lineTo(q.x,q.y);
+      }
+      gl.strokeStyle = 'rgba(125,211,252,0.06)'; gl.stroke();
+    }
+
+    for(let i=1;i<6;i++){
+      const lat = Math.PI*(i/6) - Math.PI/2; // from -pi/2..pi/2
+      gl.beginPath();
+      for(let t=0;t<=Math.PI*2+0.01;t+=0.05){
+        const x = Math.cos(lat)*Math.cos(t);
+        const y = Math.cos(lat)*Math.sin(t);
+        const z = Math.sin(lat);
+        let p = {x,y,z}; p = rotY(cam.rotY)(p); p = rotX(cam.rotX)(p);
+        const q = project(p);
+        if(t===0) gl.moveTo(q.x,q.y); else gl.lineTo(q.x,q.y);
+      }
+      gl.strokeStyle = 'rgba(148,163,184,0.04)'; gl.stroke();
+    }
+
+    // axes
+    const axes = [ {v:[1,0,0], col:'rgba(248,113,113,0.92)'}, {v:[0,1,0], col:'rgba(251,191,36,0.92)'}, {v:[0,0,1], col:'rgba(96,165,250,0.92)'} ];
+    axes.forEach(ax=>{
+      const [x,y,z] = ax.v; let p1={x:0,y:0,z:0}; let p2={x:x*1.2,y:y*1.2,z:z*1.2}; p1 = rotY(cam.rotY)(p1); p1=rotX(cam.rotX)(p1); p2=rotY(cam.rotY)(p2); p2=rotX(cam.rotX)(p2);
+      const q1 = project(p1); const q2 = project(p2);
+      gl.beginPath(); gl.moveTo(q1.x,q1.y); gl.lineTo(q2.x,q2.y); gl.strokeStyle = ax.col; gl.lineWidth=2.4; gl.stroke();
+      // arrow head
+      gl.beginPath(); gl.arc(q2.x,q2.y,6*q2.s,0,Math.PI*2); gl.fillStyle = ax.col; gl.fill();
+    });
+
+    // point for (theta,phi)
+    const sx = Math.sin(th)*Math.cos(ph);
+    const sy = Math.sin(th)*Math.sin(ph);
+    const sz = Math.cos(th);
+    let p = {x:sx,y:sy,z:sz}; p = rotY(cam.rotY)(p); p = rotX(cam.rotX)(p);
+    const q = project(p);
+    // shadow (projected downwards)
+    gl.beginPath(); gl.ellipse(q.x, cy + R*0.65, 18*q.s, 6*q.s, 0, 0, Math.PI*2); gl.fillStyle = 'rgba(0,0,0,0.18)'; gl.fill();
+    // point
+    gl.beginPath(); gl.arc(q.x,q.y,8*q.s,0,Math.PI*2); gl.fillStyle = 'rgba(125,211,252,1)'; gl.fill();
+
+    // draw line from center to point
+    let center = {x:0,y:0,z:0}; center = rotY(cam.rotY)(center); center = rotX(cam.rotX)(center);
+    const qc = project(center);
+    gl.beginPath(); gl.moveTo(qc.x,qc.y); gl.lineTo(q.x,q.y); gl.strokeStyle='rgba(125,211,252,0.8)'; gl.lineWidth=1.8; gl.stroke();
+
+    // small labels for coordinates
+    gl.font = `${14*(window.devicePixelRatio||1)}px system-ui,Segoe UI,Roboto`; gl.fillStyle='#bfe9ff';
+    // axes labels at ends (world-space)
+    const label = (tx,ty,tz,t)=>{ let pp={x:tx,y:ty,z:tz}; pp=rotY(cam.rotY)(pp); pp=rotX(cam.rotX)(pp); const pr=project(pp); gl.fillText(t, pr.x+6, pr.y-6); };
+    label(1.05,0,0,'X'); label(0,1.05,0,'Y'); label(0,0,1.05,'Z');
+
+    // show numeric coords
+    gl.fillStyle='#dceefc'; gl.font = `${12*(window.devicePixelRatio||1)}px system-ui`;
+    gl.fillText(`(x:${sx.toFixed(3)}, y:${sy.toFixed(3)}, z:${sz.toFixed(3)})`, 12, H-14);
+  }
+
+  // animation loop
+  let lastTime = 0;
+  function loop(t){
+    const dt = (t - lastTime)/1000 || 0; lastTime = t;
+    if(autoSpin.checked) cam.rotY += 0.2*dt;
+    draw(); requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  </script>
+</body>
+</html>
